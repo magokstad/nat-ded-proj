@@ -7,104 +7,86 @@ public class Formula {
     public Formula formL;
     public Formula formR;
 
-    // Basic formula, no definitoon
-    Formula(char name) {
-        arity = 0;
-        logVar = new LogicVar(name);
-
-        formL = null;
-        formR = null;
-        operator = 0;
+    // Dynamic
+    Formula(char operatorOrVarName) {
+        switch (operatorOrVarName) {
+            case '-':
+                arity = 1;
+                operator = operatorOrVarName;
+                logVar = null;
+                return;
+            case '+':case '*':case '>':
+                arity = 2;
+                operator = operatorOrVarName;
+                logVar = null;
+                return;
+            default:
+                arity = 0;
+                operator = 0;
+                logVar = new LogicVar(operatorOrVarName);
+                return;
+        }
     }
 
     // Basic formula, definition
     Formula(char name, boolean value) {
-        arity = 0;
-        logVar = new LogicVar(name);
+        this(name);
         logVar.setValue(value);
-
-        formL = null;
-        formR = null;
-        operator = 0; 
     }
 
     // Arity 1 operation
     Formula(char operator, Formula f1) {
-        arity = 1;
-        this.operator = operator;
+        this(operator);
         formL = f1;
-
-        logVar = null;
         formR = null;
     }
 
     // Arity 2 operation
     Formula(char operator, Formula f1, Formula f2) {
-        arity = 2;
-        this.operator = operator;
+        this(operator);
         formL = f1;
         formR = f2;
-
-        logVar = null;
-    }
-
-    // Dynamic
-    Formula(char operatorOrVarName, int bloat) {
-        if (operatorOrVarName == '-') {
-            arity = 1;
-            operator = operatorOrVarName;
-            logVar = null;
-            return;
-        }
-        else if ("+*>".contains(operatorOrVarName + "")) {
-            arity = 2;
-            operator = operatorOrVarName;
-            logVar = null;
-            return;
-        }
-        arity = 0;
-        operator = 0;
-        logVar = new LogicVar(operatorOrVarName);
     }
 
     public boolean getValue() {
-        if (arity == 0) {
-            return logVar.getValue();
+        switch (arity) {
+            case 0:
+                return logVar.getValue();
+            case 1:
+                if (operator == '-') return !formL.getValue();
+                throw new OperatorDoesNotExistException(operator);
+            case 2:
+                if (operator == '>') return !formL.getValue() || formR.getValue();
+                else if (operator == '+') return formL.getValue() || formR.getValue();
+                else if (operator == '*') return formL.getValue() && formR.getValue();
+                throw new OperatorDoesNotExistException(operator);
+            default:
+                throw new MaxArityException();
         }
-        else if (arity == 1) {
-            if (operator == '-') return !formL.getValue();
-            throw new OperatorDoesNotExistException(operator);
-        }
-        else if (arity == 2) {
-            if (operator == '>') return !formL.getValue() || formR.getValue();
-            else if (operator == '+') return formL.getValue() || formR.getValue();
-            else if (operator == '*') return formL.getValue() && formR.getValue();
-            throw new OperatorDoesNotExistException(operator);
-        }
-        throw new MaxArityException();
     }
 
-    public static Formula genFormula(Formula boiler) {
+    public static Formula genRandomFormula(Formula boiler) {
         Formula nextForm;
-        if (boiler.arity == 1) {
-            char c = Helper.pickFormulaStep();
-            nextForm = new Formula(c, 0);
-            boiler.formL = genFormula(nextForm);
-            
-            return boiler;
-        }
-        else if (boiler.arity == 2) {
-            char c = Helper.pickFormulaStep();
-            nextForm = new Formula(c, 0);
-            boiler.formL = genFormula(nextForm);
 
-            c = Helper.pickFormulaStep();
-            nextForm = new Formula(c, 0);
-            boiler.formR = genFormula(nextForm);
-            
-            return boiler;
+        switch (boiler.arity) {
+            case 1:
+                char c = Helper.pickFormulaStep();
+                nextForm = new Formula(c);
+                boiler.formL = genRandomFormula(nextForm);
+                break;
+            case 2:
+                c = Helper.pickFormulaStep();
+                nextForm = new Formula(c);
+                boiler.formL = genRandomFormula(nextForm);
+
+                c = Helper.pickFormulaStep();
+                nextForm = new Formula(c);
+                boiler.formR = genRandomFormula(nextForm);
+                break;
+            default:
+                // We have a var, base case
+                break;
         }
-        // We have a var, base case
         return boiler;
     }
 

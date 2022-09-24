@@ -12,7 +12,7 @@ public class Helper {
         int num = randGen.nextInt() % 100;
         if (num < 10) {
             ArrayList<Character> ting = new ArrayList<>();
-            ting.addAll(LogicVar.getSet());
+            ting.addAll(LogicVar.getKeySet());
             return ting.get(randGen.nextInt(ting.size()));
         }
         num = randGen.nextInt() % 100;
@@ -32,7 +32,7 @@ public class Helper {
 
     public static boolean checkTaut(Formula form) {
         ArrayList<Character> tongs = new ArrayList<>();
-        tongs.addAll(LogicVar.getSet());
+        tongs.addAll(LogicVar.getKeySet());
 
         for (int i = 0; i < Math.pow(2, tongs.size()); i++) {
             for (int j = 0; j < tongs.size(); j++) {
@@ -47,6 +47,9 @@ public class Helper {
         return true;
     }
 
+
+    // This method is so long, i wish i wrote comments, 
+    // TODO: comments
     public static ArrayList<Formula> allForm(int depth) {
         // A B C
         // -A -B -C
@@ -68,7 +71,8 @@ public class Helper {
         HashSet<Formula> formHash = new HashSet<>();
         HashSet<Formula> tauts = new HashSet<>();
 
-        varArray.addAll(LogicVar.getSet());
+        // 1. Adds all variables
+        varArray.addAll(LogicVar.getKeySet());
         for (int i = 0; i < varArray.size(); i++) {
             logVars = logVars + varArray.get(i);
             Formula form = new Formula(varArray.get(i));
@@ -78,6 +82,9 @@ public class Helper {
         for (int dep = 0; dep < depth; dep++) {
             HashSet<Formula> megaTemp = new HashSet<>();
             HashSet<Formula> temp = new HashSet<>();
+
+
+            // 2. Adds all '-'s
             for (Formula form : formHash) {
                 // Add a negForm unless it will become --
                 if (form.operator != '-') {
@@ -93,6 +100,7 @@ public class Helper {
             megaTemp.addAll(temp);
             temp.clear();
 
+            // 3. Adds all '+', '>' and '*'
             for (Formula form0 : formHash) {
                 for (Formula form1 : formHash) {
                     for (int i = 0; i < sign.length(); i++) {

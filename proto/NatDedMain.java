@@ -35,6 +35,7 @@ public class NatDedMain {
         */
 
         // Automatic tautology
+
         LogicVar.setVar('A', true);
         LogicVar.setVar('B', false);
         //LogicVar.setVar('C',false);
@@ -43,16 +44,20 @@ public class NatDedMain {
         boolean cont = true;
         int count = 0;
         while (cont) {
-            formula = Formula.genFormula(formula);
+            formula = Formula.genRandomFormula(formula);
             cont = !Helper.checkTaut(formula);
             count++;
         }
-        System.out.println(count + "\n" + formula + "\n\n\n");
+        System.out.println("Tries until tautology generated: " + count + "\n\n" + "Tautology generated:\n" + formula + "\n");
         ArrayList<Formula> forms = Helper.allForm(3);
         //System.out.println(forms);
-        System.out.println(forms.size());
-        System.out.println(forms.get(Helper.getRandom().nextInt(forms.size())));
+        System.out.println("Amount of Formulas generated: " + forms.size());
+        System.out.println("\n" + "10 Randomly chosen formulas:");
+        for (int i = 0; i < 10; i++) {
+            System.out.println(forms.get(Helper.getRandom().nextInt(forms.size())));
+        }
         //System.out.println(new Formula('>',new Formula('A'), new Formula('A')).equals(new Formula('>',new Formula('A'), new Formula('A'))));
+        System.out.println("Press enter to continue...");
         Scanner sc = new Scanner(System.in);
         sc.nextLine();
         sc.close();
