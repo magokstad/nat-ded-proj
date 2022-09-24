@@ -54,7 +54,7 @@ public class NatDedMain {
         System.out.println(forms.get(Helper.getRandom().nextInt(forms.size())));
         //System.out.println(new Formula('>',new Formula('A'), new Formula('A')).equals(new Formula('>',new Formula('A'), new Formula('A'))));
         Scanner sc = new Scanner(System.in);
-        String waitToQuit = sc.nextLine();
+        sc.nextLine();
         sc.close();
 
     }
