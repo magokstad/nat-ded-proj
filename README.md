@@ -1,4 +1,4 @@
-# Untitled Nat-Ded Project
+# Untitled Natural Deduction Project
 
 #### Intro
 I think it is going to be a game eventually.
