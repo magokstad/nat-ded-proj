@@ -1,9 +1,10 @@
-import type { Component } from 'solid-js';
+import type { Component } from 'solid-js'
+import MathSVG from './MathSVG';
 
 function Huh() {
     return (
     <div>
-      
+      <MathSVG math="hi"/>
     </div>
     );
   }
